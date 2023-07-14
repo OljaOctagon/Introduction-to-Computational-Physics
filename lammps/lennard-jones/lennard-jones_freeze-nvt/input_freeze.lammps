@@ -1,0 +1,78 @@
+# PART A - ENERGY MINIMIZATION
+
+# 1) Initialization
+units lj
+dimension 3
+atom_style atomic
+pair_style lj/cut 2.5
+boundary p p p
+
+# 2) System definition
+region simulation_box block -10 10 -10 10 -10 10
+create_box 1 simulation_box
+create_atoms 1 random 200 341341 simulation_box
+
+# 3) Simulation settings
+mass 1 1
+pair_coeff 1 1 1.0 1.0
+neigh_modify every 1 delay 5 check yes
+
+
+# 4) Visualization
+thermo 10
+# 5) Run
+minimize 1.0e-4 1.0e-6 1000 10000
+
+# PART B - MOLECULAR DYNAMICS
+
+# 4) Equilibration Run 
+
+# 4.1 Write out and visualisation 
+thermo 1000
+variable kinetic_energy equal ke
+variable potential_energy equal pe
+variable pressure equal press
+
+thermo_style custom step pe ke etotal temp press density
+fix myat1 all ave/time 10 1 10 v_kinetic_energy v_potential_energy file energy_liquid.dat
+dump mydmp_liquid all custom 100 dump_liquid.xyz x y z ix iy iz
+dump mydmp_liquid_vmd all atom 100 dump_liquid.lammpstrj
+
+# 4.2 Run 
+fix mynve all nve
+fix mylgv all langevin 1.5 1.5 0.1 2393293
+timestep 0.005
+run 10000
+
+# 5.) Run and visualize freezing 
+# 5.1) Write out and visualisation
+thermo 1000
+variable kinetic_energy equal ke
+variable potential_energy equal pe
+variable pressure equal press
+fix myat1 all ave/time 10 1 10 v_kinetic_energy v_potential_energy file energy_freezing.dat
+dump mydmp_freeze all custom 1000 dump_freeze.xyz x y z ix iy iz 
+dump mydmp_freeze_vmd all atom 100 dump_freeze.lammpstrj
+
+# 5.2 Run 
+fix mynve all nve
+fix mylgv all langevin 1.5 0.1 0.1 1530917
+timestep 0.005
+run 400000
+
+# 6.) Production Run for g(r)
+# 6.1 Write out and visualisation
+thermo 100
+variable kinetic_energy equal ke
+variable potential_energy equal pe
+variable pressure equal press
+fix myat1 all ave/time 10 1 10 v_kinetic_energy v_potential_energy file energy_clusters.dat
+dump mydmp_frozen_clusters all custom 100 dump_frozen_clusters.xyz x y z ix iy iz
+dump mydmp_frozen_clusters_vmd all atom 100 dump_frozen_clusters.lammpstrj
+
+
+# 6.2 Run 
+fix mynve all nve
+fix mylgv all langevin 0.1 0.1 0.1 10203203
+timestep 0.005
+run 10000
