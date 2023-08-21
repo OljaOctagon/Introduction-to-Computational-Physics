@@ -1,0 +1,47 @@
+units		lj
+atom_style	sphere
+atom_modify	map array first big
+dimension	3
+
+# read in clusters of rigid bodies
+
+fix             molprop all property/atom mol
+read_data	starting_state_dimer.data fix molprop NULL Molecules
+
+set		type 1 mass 1.0
+group		big type 1
+velocity	big create 1.44 87287 loop geom
+	
+# equilibrate dimers
+
+pair_style	soft 1.12
+pair_coeff	1 1 0.0 
+pair_coeff	2 2 0.0 0.0
+pair_coeff	1 2 0.0 0.0
+
+
+​compute t1 all temp/sphere
+thermo_modify temp t1
+
+variable        prefactor equal ramp(0,60)
+fix             soft all adapt 1 pair soft a * * v_prefactor
+fix		1 big rigid molecule
+
+dump   mydump all atom 10000 init.lammpstrj
+thermo		100
+run		10000
+
+# define actual pair potential 
+unfix  soft
+pair_style	lj/cut 2.5
+pair_coeff	1 1 10 1.0
+pair_coeff	2 2 10 1.0
+
+
+thermo 100
+dump  mydump2  all atom 500 equilibration.lammpstrj
+#fix 2 all nvt temp 0.20 0.20 $(100.0*dt)
+#​compute t2 all temp/sphere
+#thermo_modify temp t2
+run 100000
+

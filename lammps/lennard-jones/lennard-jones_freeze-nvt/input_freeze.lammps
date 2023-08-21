@@ -12,6 +12,7 @@ region simulation_box block -10 10 -10 10 -10 10
 create_box 1 simulation_box
 create_atoms 1 random 200 341341 simulation_box
 
+
 # 3) Simulation settings
 mass 1 1
 pair_coeff 1 1 1.0 1.0

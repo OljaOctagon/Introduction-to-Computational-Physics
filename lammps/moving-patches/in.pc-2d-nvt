@@ -1,0 +1,57 @@
+###########################
+# PC LAMMPS - 2 patches #
+###########################
+
+# Initialization
+units lj
+dimension 3
+boundary p p p
+atom_style full 
+
+# Starting configuration (random)
+read_data startingstate.txt
+
+# Simulation settings
+neighbor 0.3 bin
+neigh_modify check yes delay 0
+
+pair_style lj/cut 2.5
+bond_style     harmonic
+angle_style    harmonic
+
+pair_coeff     1 1 1.0 1.0 1.22
+pair_coeff     1 2 1.0 0.55 0.6173
+pair_coeff     2 2 1.0 0.1
+bond_coeff     1 9999.9 0.5     # center-patch1 distance
+angle_coeff    1 9999.9 180.0   # patch-patch angle
+
+# Write out and visualization
+variable tot_pot equal 3*epair
+thermo_style custom step v_tot_pot temp pe
+fix myfile all ave/time 10 1 10 v_tot_pot file energy.dat
+thermo 10000
+
+# Run
+timestep 0.0001
+restart 1000 restart
+
+# equilibration
+dump           dumpy   all atom 10000 equilibration.lammpstrj
+dump_modify    dumpy   sort id    pbc yes
+velocity       all create 1.0 ${seed} dist gaussian rot yes
+fix 1 all nvt temp 1.0 1.0 $(100.0*dt)
+fix 10 1 enforce2d
+run 100000
+unfix 1
+fix 1 all nvt temp 1.0 0.20 $(100.0*dt)
+fix 10 1 enforce2d
+run 100000
+unfix 1
+undump         dumpy
+
+# assembly
+dump           dumpy   all atom 10000 trajectory.lammpstrj
+dump_modify    dumpy   sort id    pbc yes
+fix 1 all nvt temp 0.01 0.01 $(100.0*dt)
+fix 10 1 enforce2d
+run 1500000
