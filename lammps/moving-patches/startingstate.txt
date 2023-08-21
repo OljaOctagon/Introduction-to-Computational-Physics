@@ -6,7 +6,7 @@
              225 angles
 
                2 atom types
-               1 bond types
+               1 bond types 
                1 angle types
 
       0.00000000     23.71708245     xlo xhi

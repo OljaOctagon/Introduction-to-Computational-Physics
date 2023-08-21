@@ -4,7 +4,7 @@
 
 # Initialization
 units lj
-dimension 3
+dimension 2
 boundary p p p
 atom_style full 
 
@@ -40,11 +40,11 @@ dump           dumpy   all atom 10000 equilibration.lammpstrj
 dump_modify    dumpy   sort id    pbc yes
 velocity       all create 1.0 ${seed} dist gaussian rot yes
 fix 1 all nvt temp 1.0 1.0 $(100.0*dt)
-fix 10 1 enforce2d
+fix 10 all enforce2d
 run 100000
 unfix 1
 fix 1 all nvt temp 1.0 0.20 $(100.0*dt)
-fix 10 1 enforce2d
+fix 10 all enforce2d
 run 100000
 unfix 1
 undump         dumpy
@@ -53,5 +53,5 @@ undump         dumpy
 dump           dumpy   all atom 10000 trajectory.lammpstrj
 dump_modify    dumpy   sort id    pbc yes
 fix 1 all nvt temp 0.01 0.01 $(100.0*dt)
-fix 10 1 enforce2d
+fix 10 all enforce2d
 run 1500000

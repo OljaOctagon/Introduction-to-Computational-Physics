@@ -1,0 +1,23 @@
+# starting configuration template for LAMMPS available at
+# https://github.com/OljaOctagon/Introduction-to-Computational-Physics
+
+             675 atoms
+             450 bonds
+             225 angles
+
+               2 atom types
+               1 bond types
+               1 angle types
+      
+       0    1     xlo xhi
+       0    25     ylo yhi
+       0    1     zlo zhi
+         
+Masses
+#  atomtype, mass
+1       2.0  
+2       0.5  
+
+
+Atoms 
+#  atom-ID       mol-ID       atom-type       x       y      z
