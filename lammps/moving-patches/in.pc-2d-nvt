@@ -9,7 +9,8 @@ boundary p p p
 atom_style full 
 
 # Starting configuration (random)
-read_data startingstate.txt
+#read_data startingstate.txt
+read_data starting_state.txt 
 
 # Simulation settings
 neighbor 0.3 bin
