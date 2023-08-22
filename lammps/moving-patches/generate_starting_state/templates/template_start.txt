@@ -1,5 +1,6 @@
 # starting configuration template for LAMMPS available at
 # https://github.com/OljaOctagon/Introduction-to-Computational-Physics
+# File format according to https://docs.lammps.org/2001/data_format.html
 
 {{number_of_atoms}} atoms
 {{number_of_bonds}} bonds
