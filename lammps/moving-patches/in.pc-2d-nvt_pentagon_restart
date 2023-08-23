@@ -1,0 +1,20 @@
+#################################
+# PC LAMMPS - 5 patches  restart 
+################################
+
+read_restart restart/restart.10000000
+neigh_modify every 1 delay 5 check yes
+
+thermo 10000
+variable tot_pot equal 3*epair
+thermo_style custom step v_tot_pot temp pe
+fix myfile all ave/time 10 1 10 v_tot_pot file energy.dat
+
+
+timestep 0.0001
+restart 1000000 restart
+dump           dumpy   all atom 10000 trajectory.lammpstrj
+dump_modify    dumpy   sort id    pbc yes
+fix 1 all nvt temp 0.2 0.2 $(100.0*dt)
+fix 10 all enforce2d
+run 10000000
