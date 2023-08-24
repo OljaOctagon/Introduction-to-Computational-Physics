@@ -2,19 +2,43 @@
 # PC LAMMPS - 5 patches  restart 
 ################################
 
-read_restart restart/restart.10000000
+read_restart restart/restart.73000000
 neigh_modify every 1 delay 5 check yes
+
+group central_particles type 1 
 
 thermo 10000
 variable tot_pot equal 3*epair
 thermo_style custom step v_tot_pot temp pe
 fix myfile all ave/time 10 1 10 v_tot_pot file energy.dat
 
+# bond info 
+#variable d internal 0.0
+#variable dsq equal v_d*v_d
+#compute 1 all property/local batom1 batom2 btype
+#compute 2 all bond/local engpot dx dy dz dist v_dsq omega set dist d
+#dump 11 all local 100 bond_info.dump c_1[*] c_2[*]
 
-timestep 0.0001
+# angle info 
+#variable t internal 0.0
+#variable cos equal cos(v_t)
+#variable cossq equal cos(v_t)*cos(v_t)
+
+#compute 1 all property/local aatom1 aatom2 aatom3 atype
+#compute 2 all angle/local eng theta v_cos v_cossq set theta t
+#dump 1 all local 100 angle_info.dump c_1[*] c_2[*]
+
+#compute steinhardt central_particles orientorder/atom degrees 6 4 5 6 8 10 12 nnn NULL cutoff 1.5
+#dump 1 central_particles custom 100 steinhardt.dump c_qx[*]
+
+compute 1 all property/local patom1 patom2 ptype1 ptype2 
+compute 2 all pair/local dist eng 
+dump 1 all local 1000 pair_info.dump index c_1[*] c_2[*]
+
+timestep 0.001
 restart 1000000 restart
 dump           dumpy   all atom 10000 trajectory.lammpstrj
 dump_modify    dumpy   sort id    pbc yes
 fix 1 all nvt temp 0.2 0.2 $(100.0*dt)
 fix 10 all enforce2d
-run 10000000
+run 1000000
