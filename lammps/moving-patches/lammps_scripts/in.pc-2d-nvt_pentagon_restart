@@ -32,13 +32,13 @@ fix myfile all ave/time 10 1 10 v_tot_pot file energy.dat
 #dump 1 central_particles custom 100 steinhardt.dump c_qx[*]
 
 compute 1 all property/local patom1 patom2 ptype1 ptype2 
-compute 2 all pair/local dist eng 
-dump 1 all local 1000 pair_info.dump index c_1[*] c_2[*]
+compute 2 all pair/local dist dx dy eng 
+dump 1 all local 10000 pair_info.dump index c_1[*] c_2[*]
 
-timestep 0.001
+timestep 0.0001
 restart 1000000 restart
 dump           dumpy   all atom 10000 trajectory.lammpstrj
 dump_modify    dumpy   sort id    pbc yes
 fix 1 all nvt temp 0.2 0.2 $(100.0*dt)
 fix 10 all enforce2d
-run 1000000
+run 10000000

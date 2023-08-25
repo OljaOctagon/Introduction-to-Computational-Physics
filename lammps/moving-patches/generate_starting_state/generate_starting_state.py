@@ -1,7 +1,7 @@
 from jinja2 import Environment, FileSystemLoader
 import numpy as np
 
-npart = 225
+npart = 500
 npatch = 5
 natoms = npart * (npatch + 1)
 nbonds = npart * npatch
@@ -9,9 +9,16 @@ nangles = npart * npatch
 # diameter of core
 sigma = 1
 
-lx2 = 10
+lx2 = 15
 ly2 = lx2
 lz2 = 0.5
+
+rho = npart / (2 * lx2 * 2 * ly2 * 2 * lz2)
+print("number density central particles: ", rho)
+
+volume_sphere = 4 * np.power(sigma / 2, 3) * np.pi / 3
+packing = rho * volume_sphere
+print("packing fraction central particles: ", packing)
 
 context = {
     "number_of_atoms": natoms,

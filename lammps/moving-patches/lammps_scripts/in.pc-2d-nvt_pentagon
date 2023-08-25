@@ -1,5 +1,5 @@
 ###########################
-# PC LAMMPS - 2 patches #
+# PC LAMMPS - 5 patches #
 ###########################
 
 # Initialization
@@ -22,7 +22,7 @@ angle_style    harmonic
 pair_coeff     1 1 1.0 1.0 1.22
 pair_coeff     1 2 1.0 0.55 0.6173
 pair_coeff     2 2 1.0 0.1
-bond_coeff     1 10000 0.5     # center-patch1 distance
+bond_coeff     1 10 0.5     # center-patch1 distance
 angle_coeff    1 10 180.0   # patch-patch angle
 
 # 5) Energy Minimization 
@@ -32,10 +32,14 @@ minimize 1.0e-4 1.0e-6 1000 10000
 variable tot_pot equal 3*epair
 thermo_style custom step v_tot_pot temp pe
 fix myfile all ave/time 10 1 10 v_tot_pot file energy.dat
-thermo 100000
+thermo 10000
+
+compute 1 all property/local patom1 patom2 ptype1 ptype2 
+compute 2 all pair/local dist dx dy eng 
+dump 1 all local 10000 pair_info.dump index c_1[*] c_2[*]
 
 # Run
-timestep 0.001
+timestep 0.0001
 restart 1000000 restart
 
 # equilibration
@@ -46,15 +50,15 @@ fix 1 all nvt temp 1.0 1.0 $(100.0*dt)
 fix 10 all enforce2d
 run 100000
 unfix 1
-fix 1 all nvt temp 1.0 0.20 $(100.0*dt)
+fix 1 all nvt temp 1.0 0.225 $(100.0*dt)
 fix 10 all enforce2d
-run 100000
+run 1000000
 unfix 1
 undump         dumpy
 
 # assembly
 dump           dumpy   all atom 1000 trajectory.lammpstrj
 dump_modify    dumpy   sort id    pbc yes
-fix 1 all nvt temp 0.2 0.2 $(100.0*dt)
+fix 1 all nvt temp 0.225 0.225 $(100.0*dt)
 fix 10 all enforce2d
 run 10000000
