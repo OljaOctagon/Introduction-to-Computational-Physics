@@ -9,18 +9,22 @@ fix             molprop all property/atom mol
 read_data	starting_state.txt fix molprop NULL Molecules
 
 set		type 1 mass 1.0
-group		big type 1
-velocity	big create 1.44 87287 loop geom
-	
-# Equilibrate rhombi with soft potential 
+set     type 2 mass 1.0 
+group		big type 1 2 
+#velocity	big create 1.44 87287 loop geom
+velocity       all create 1.0 ${seed} dist gaussian rot yes
 
+# Equilibrate rhombi with soft potential 
 pair_style	soft 1.12
 pair_coeff	1 1 0.0 
+pair_coeff  2 2 0.0 0.0
+pair_coeff  1 2 0.0 0.0
 
 compute t1 all temp/sphere
 thermo_modify temp t1
+
 variable        prefactor equal ramp(0,60)
-fix             soft all adapt 1 pair soft a * * v_prefactor
+fix             soft all adapt 1  pair soft  a * * v_prefactor 
 fix		1 big rigid/nvt  molecule temp 2.0 2.0 5.0 reinit no 
 fix 10 all enforce2d
 dump   mydump all atom 10000 init.lammpstrj
@@ -32,11 +36,14 @@ run		10000
 # define actual pair potential 
 unfix  soft
 pair_style	lj/cut 2.5
-pair_coeff	1 1 1 0.25
+pair_coeff	1 1 1 0.1 0.122 # platelet-platelet WCA 
+pair_coeff  2 2 1 0.2 # patch-patch LJ 
+pair_coeff  1 2 1 0.15 0.1683 # patch-platelet WCA 
 
 thermo 10000
 dump  mydump2  all atom 1000 equilibration.lammpstrj
 fix		1 big rigid/nvt  molecule temp 1.0 1.0 5.0 reinit no 
+
 fix 10 all enforce2d
 run 100000
 
