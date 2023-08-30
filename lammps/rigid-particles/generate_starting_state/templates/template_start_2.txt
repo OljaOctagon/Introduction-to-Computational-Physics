@@ -9,14 +9,14 @@
 {{ylo}}   {{yhi}}     ylo yhi
 {{zlo}}   {{zhi}}     zlo zhi
          
+Masses
+#  atomtype, mass
+{% for mass in masses -%}
+    {{mass.type}}       {{mass.mass}}  
+{% endfor %}
+
 Atoms 
 #  atom-ID       mol-ID       atom-type    charge     x       y      z
 {% for atom in atoms -%}
     {{atom.atom_id}}          {{atom.mol_id}}         {{atom.atom_type}}       {{atom.charge}}        {{atom.x}}       {{atom.y}}       {{atom.z}}
-{% endfor %}
-
-Molecules
-#  atom ID mol ID
-{% for mol in molecules -%}
-    {{mol.atom_id}}       {{mol.mol_id}}
 {% endfor %}

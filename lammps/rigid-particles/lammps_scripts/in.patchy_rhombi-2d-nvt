@@ -1,18 +1,21 @@
 units		lj
 atom_style	sphere
 atom_modify	map array first big
+boundary p p p 
 dimension	2
 
 # read in clusters of rigid bodies
-
 fix             molprop all property/atom mol
 read_data	starting_state.txt fix molprop NULL Molecules
 
 set		type 1 mass 1.0
 set     type 2 mass 1.0 
+
 group		big type 1 2 
 #velocity	big create 1.44 87287 loop geom
 velocity       all create 1.0 ${seed} dist gaussian rot yes
+neighbor 0.3 bin 
+neigh_modify check yes delay 0 
 
 # Equilibrate rhombi with soft potential 
 pair_style	soft 1.12
@@ -37,7 +40,7 @@ run		10000
 unfix  soft
 pair_style	lj/cut 2.5
 pair_coeff	1 1 1 0.1 0.122 # platelet-platelet WCA 
-pair_coeff  2 2 1 0.2 # patch-patch LJ 
+pair_coeff  2 2 1 0.1 # patch-patch LJ 
 pair_coeff  1 2 1 0.15 0.1683 # patch-platelet WCA 
 
 thermo 10000
@@ -51,7 +54,7 @@ run 100000
 thermo 10000
 restart 100000 restart
 dump  mydump3  all atom 1000 trajectory.lammpstrj
-fix		1 big rigid/nvt  molecule temp 0.1 0.1 5.0 reinit no 
+fix		1 big rigid/nvt  molecule temp 0.01 0.01 5.0 reinit no 
 fix 10 all enforce2d
 run 100000000
 
