@@ -5,8 +5,8 @@ npart = 1000
 npatch = 5
 natoms = npart * (npatch + 1)
 nbonds = npart * npatch
-# nangles = npart * npatch
-nangles = npart * (npatch + 2)
+nangles = npart * npatch
+#nangles = npart * (npatch + 2)
 
 # diameter of core
 sigma = 1
@@ -130,6 +130,7 @@ for i in range(npart):
 
         angles.append(angle)
 
+    ''' 
     for j in range(1, 3):
         angle = {
             "id": i + 1,
@@ -140,7 +141,7 @@ for i in range(npart):
         }
 
         angles.append(angle)
-
+    '''
 
 context["atoms"] = atoms
 context["bonds"] = bonds
