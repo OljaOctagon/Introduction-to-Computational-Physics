@@ -1,8 +1,8 @@
 from jinja2 import Environment, FileSystemLoader
 import numpy as np
 
-npart = 300
-npatch = 4
+npart = 1000
+npatch = 5
 natoms = npart * (npatch + 1)
 nbonds = npart * npatch
 # nangles = npart * npatch
@@ -11,9 +11,9 @@ nangles = npart * (npatch + 2)
 # diameter of core
 sigma = 1
 
-lx2 = 7
+lx2 = 14
 ly2 = lx2
-lz2 = lx2
+lz2 = 0.5
 
 rho = npart / (2 * lx2 * 2 * ly2 * 2 * lz2)
 print("number density central particles: ", rho)
