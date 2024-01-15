@@ -28,7 +28,7 @@ context = {
     "number_of_angles": nangles,
     "number_of_atom_types": 2,
     "number_of_bond_types": 1,
-    "number_of_angle_types": 2,
+    "number_of_angle_types": 1,
     "xlo": -lx2,
     "xhi": lx2,
     "ylo": -lx2,
